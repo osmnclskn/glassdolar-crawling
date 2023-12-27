@@ -18,12 +18,13 @@ docker run -d -p 8000:8000 glassdollar-crawling
 ## User Guide
 ### On Browser
 .Go to http://localhost:8000/ in your browser.
-.Click the "Start Fetch" button.![Ekran görüntüsü 2023-12-27 075318](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/05ac0413-7ff5-481b-92da-f01be03346dc)
+.Click the "Start Fetch" button.
+![Ekran görüntüsü 2023-12-27 075318](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/05ac0413-7ff5-481b-92da-f01be03346dc)
 
 .After that you will see this message ![image](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/70982111-0263-443f-90e4-74198f619cb7)
 
 .When you click on the "tamam" button, it will take you to a page. When you press the return button, you will return to the home page.
-.This is our main page ![main_page](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/85a0629e-d92a-44c9-a64b-9a93db539aa7)
+.This is our main page !  [main_page](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/85a0629e-d92a-44c9-a64b-9a93db539aa7)
 ### Count Companies
 .Click the "Count Companies" button to get the total number of fetched companies. A POST request is sent to the `/count_companies` endpoint.![count_companies](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/8e816141-765e-4462-a363-efdc87587c89)
 ### Perform Clustering
