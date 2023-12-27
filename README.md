@@ -5,4 +5,12 @@
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/osmnclskn/glassdolar-crawling.git
-2.
+2.**Build the Docker Image""
+ ```bash
+docker build -t glassdolar-crawling .
+```
+
+3** Run the Docker Container""
+ ```bash
+docker run -d -p 8000:8000 glassdollar-crawling
+```
