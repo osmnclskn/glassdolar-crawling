@@ -14,3 +14,9 @@ docker build -t glassdolar-crawling .
  ```bash
 docker run -d -p 8000:8000 glassdollar-crawling
 ```
+
+## User Guide
+### On Browser
+.Go to http://localhost:8000/ in your browser.
+.Click the "Start Fetch" button.
+a,
