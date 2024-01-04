@@ -60,11 +60,15 @@ Click the "Perform Clustering" button to apply k-means clustering to the company
 ### View Clustered Companies
 Click the "Clustered Companies" button to view the results of the clustering operation. A GET request is sent to the `/clustered_companies` endpoint.(You should press this button when you press the "Perform Clustering" button. Then it will start working and you can access the .json file seen in the picture below.)
 
-![clustering_json1](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/909a99d5-7be4-443b-9f24-70cbb6fdbf79)      
+ ![clustering4](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/79ba875f-64cd-4c2d-84e0-d6b9a2d6cb54)
+    
 
-![clustering_json12png](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/264d8703-8d69-400c-a4c6-2c6e2805d6a2)   ![clustering_json123png](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/5f87ed6f-3396-485a-8186-a928e40e936c)
+![cluster5](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/7a0a16a9-ac49-490d-bdb5-3ad56370cd90)
+  ![cluster6](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/ac246df6-51f1-47c9-9a7b-0987174efc73)
+![cluster7](https://github.com/osmnclskn/glassdolar-crawling/assets/95987598/3d92d23a-365e-45fe-ac8b-6d3495478111)
 
-This clustering process was carried out by taking the country information of all companies and data on the 3 most densely populated countries. Accordingly, they were clustered. (Only some of the companies are shown in the picture, not included so as not to take up too much space)
+
+This clustering process was done according to the fields in which the companies operate. Accordingly, they were divided into 4 clusters (Some of the companies are visible in the pictures, there are more, they were not added due to space reasons...)
 ### View All Companies
 Click the "All Companies" button to view details of all fetched companies. A GET request is sent to the `/all_companies` endpoint.(A part of the file is shown due to its size. It contains information of all companies in the json file.)
 
