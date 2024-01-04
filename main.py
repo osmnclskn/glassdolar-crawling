@@ -1,7 +1,7 @@
 # main.py
-
 import json
 
+import numpy as np
 import pandas as pd
 import requests
 from fastapi import BackgroundTasks, FastAPI, HTTPException
@@ -9,7 +9,9 @@ from fastapi.responses import HTMLResponse
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
+
 from tasks import fetch_corporates_celery as fetch_corporates
+
 app = FastAPI()
 result_json = {"corporate_details": [], "corporate_count": 0}
 fetch_status = "not started"
@@ -147,41 +149,61 @@ async def perform_clustering():
             "type": "company",
             "name": company.get("name", ""),
             "hq_country": company.get("hq_country", ""),
+            "description": company.get("description", ""),
+            "industries": company.get("startup_themes", []),
         }
         all_companies.append(company_info)
 
     df = pd.DataFrame(all_companies)
 
-    le = LabelEncoder()
-    df["hq_country_encoded"] = le.fit_transform(df["hq_country"])
+    if df.empty:
+        return {"message": "DataFrame is empty."}
 
-    # Create a KMeans model for clustering
-    num_clusters = 3
-    kmeans = KMeans(n_clusters=num_clusters, random_state=42)
-    X = df[["hq_country_encoded"]].values
+    all_industries_flat = set()
+    for industries_list in df["industries"]:
+        all_industries_flat.update(tuple(industry) for industry in industries_list)
+
+    all_industries_flat = list(all_industries_flat)
+
+    # Create weighted vector for each company
+    for industry in all_industries_flat:
+        df[industry] = df["industries"].apply(lambda x: 1 if industry in x else 0)
+
+    # Improving vector representations - Add additional features
+    vectorizer = TfidfVectorizer(stop_words="english")
+    X_text = vectorizer.fit_transform(df["description"]).toarray()
+
+    df_industries = pd.DataFrame(
+        df[all_industries_flat].values, columns=all_industries_flat
+    )
+
+    X = np.hstack([X_text, df_industries])
+
+    optimal_num_clusters = 4
+    # Build the KMeans model and perform clustering
+    kmeans = KMeans(
+        n_clusters=optimal_num_clusters,
+        init="k-means++",
+        max_iter=300,
+        n_init=10,
+        random_state=0,
+    )
     df["cluster"] = kmeans.fit_predict(X)
 
-    # Clustering and ranking companies from the most common countries
-    top_countries = df["hq_country"].value_counts().nlargest(3).index.tolist()
+    #
     clusters = {"clusters": {}}
+    for cluster_id in range(optimal_num_clusters):
+        cluster_data = df[df["cluster"] == cluster_id]
+        cluster_info = {
+            "cluster_id": cluster_id + 1,
+            "companies": cluster_data[
+                [
+                    "name",
+                ]
+            ].to_dict(orient="records"),
+        }
 
-    for country in top_countries:
-        clusters["clusters"][
-            f"Kumeleme Sonuçları - {country} ({top_countries.index(country) + 1}. Sıradakı Ulke)"
-        ] = {"country": country, "clusters": []}
-
-        country_df = df[df["hq_country"] == country]
-        clusters_key = f"Kumeleme Sonuçları - {country} ({top_countries.index(country) + 1}. Sıradakı Ulke)"
-
-        for cluster_id in country_df["cluster"].unique():
-            cluster_data = country_df[country_df["cluster"] == cluster_id]
-            cluster_info = {
-                "cluster_id": int(cluster_id) + 1,
-                "companies": cluster_data[["name", "type", "hq_country"]].to_dict(
-                    orient="records"
-                ),
-            }
-            clusters["clusters"][clusters_key]["clusters"].append(cluster_info)
+        clusters["clusters"][f"Cluster {cluster_id + 1}"] = cluster_info
 
     with open("clustered_companies.json", "w", encoding="utf-8") as json_file:
         json.dump(clusters, json_file, indent=4, ensure_ascii=False)
